@@ -122,27 +122,58 @@
       opacity: 1;
     }
 
-    .prompt {
+    .terminal {
       margin-top: 3rem;
       font-size: 0.7rem;
-      color: #333;
     }
 
-    .prompt span {
+    .terminal-history {
+      max-height: 200px;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+
+    .terminal-history::-webkit-scrollbar { display: none; }
+
+    .history-line {
+      line-height: 1.8;
+      color: #555;
+    }
+
+    .history-line .cmd {
+      color: #c8c8d0;
+    }
+
+    .history-line .host {
       color: #63dcb4;
     }
 
-    .cursor {
-      display: inline-block;
-      width: 0.5em;
-      height: 1em;
-      background: #63dcb4;
-      vertical-align: text-bottom;
-      animation: blink 1s step-end infinite;
+    .history-line .output {
+      color: #888;
+      display: block;
+      padding-left: 0;
     }
 
-    @keyframes blink {
-      50% { opacity: 0; }
+    .prompt-line {
+      display: flex;
+      align-items: center;
+      line-height: 1.8;
+      color: #555;
+    }
+
+    .prompt-line .host {
+      color: #63dcb4;
+    }
+
+    .prompt-input {
+      background: none;
+      border: none;
+      outline: none;
+      color: #c8c8d0;
+      font-family: inherit;
+      font-size: inherit;
+      flex: 1;
+      caret-color: #63dcb4;
     }
 
     @media (max-width: 500px) {
@@ -176,9 +207,78 @@
       <a href="mailto:andreas@soan.se">andreas@soan.se</a>
     </div>
 
-    <div class="prompt">
-      <span>guest@soan.se</span> ~ $ <span class="cursor"></span>
+    <div class="terminal">
+      <div class="terminal-history" id="history"></div>
+      <div class="prompt-line">
+        <span><span class="host">guest@soan.se</span> ~ $&nbsp;</span>
+        <input class="prompt-input" id="input" type="text" autofocus autocomplete="off" spellcheck="false">
+      </div>
     </div>
   </div>
+
+  <script>
+    const commands = {
+      help:    'available commands: help, whoami, ls, cat readme, uptime, ping, clear',
+      whoami:  'guest — nice try though',
+      ls:      'projects/  experiments/  .secrets  README',
+      uptime:  Math.floor(Math.random() * 9000 + 1000) + ' days — mass: stable, mass/energy: conserved',
+      ping:    'pong',
+      clear:   null,
+      'cat readme': 'personal lab of andreas. mostly harmless.',
+      'cat .secrets': 'permission denied: nice try :)',
+      sudo:    'andreas is not in the sudoers file. this incident will be reported.',
+    };
+
+    const input = document.getElementById('input');
+    const history = document.getElementById('history');
+
+    document.body.addEventListener('click', () => input.focus());
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter') return;
+      const cmd = input.value.trim().toLowerCase();
+      input.value = '';
+      if (!cmd) return;
+
+      if (cmd === 'clear') {
+        history.innerHTML = '';
+        return;
+      }
+
+      const line = document.createElement('div');
+      line.className = 'history-line';
+
+      let response;
+      if (commands[cmd] !== undefined) {
+        response = commands[cmd];
+      } else if (cmd.startsWith('sudo ')) {
+        response = commands['sudo'];
+      } else if (cmd.startsWith('cat ')) {
+        response = 'cat: ' + cmd.slice(4) + ': no such file';
+      } else if (cmd === 'cd' || cmd.startsWith('cd ')) {
+        response = 'nowhere to go — you\'re already home';
+      } else if (cmd === 'exit' || cmd === 'logout') {
+        response = 'there is no escape';
+      } else if (cmd === 'rm' || cmd.startsWith('rm ')) {
+        response = 'not on my watch';
+      } else {
+        response = '-bash: ' + cmd.split(' ')[0] + ': command not found';
+      }
+
+      line.innerHTML =
+        '<span class="host">guest@soan.se</span> ~ $ <span class="cmd">' +
+        escapeHtml(cmd) + '</span>' +
+        '<span class="output">' + escapeHtml(response) + '</span>';
+
+      history.appendChild(line);
+      history.scrollTop = history.scrollHeight;
+    });
+
+    function escapeHtml(s) {
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+  </script>
 </body>
 </html>
