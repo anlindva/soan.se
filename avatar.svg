@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#12131a"/>
+      <stop offset="100%" stop-color="#0a0a0f"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="40%">
+      <stop offset="0%" stop-color="#63dcb4" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#63dcb4" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#63dcb4"/>
+      <stop offset="100%" stop-color="#4ab899"/>
+    </linearGradient>
+    <filter id="textGlow">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="subtleGlow">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- background -->
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <rect width="400" height="400" fill="url(#glow)"/>
+
+  <!-- grid lines -->
+  <g stroke="#63dcb4" stroke-opacity="0.04" stroke-width="0.5">
+    <line x1="0" y1="80" x2="400" y2="80"/>
+    <line x1="0" y1="160" x2="400" y2="160"/>
+    <line x1="0" y1="240" x2="400" y2="240"/>
+    <line x1="0" y1="320" x2="400" y2="320"/>
+    <line x1="80" y1="0" x2="80" y2="400"/>
+    <line x1="160" y1="0" x2="160" y2="400"/>
+    <line x1="240" y1="0" x2="240" y2="400"/>
+    <line x1="320" y1="0" x2="320" y2="400"/>
+  </g>
+
+  <!-- corner brackets -->
+  <g stroke="#63dcb4" stroke-opacity="0.25" stroke-width="1.5" fill="none" filter="url(#subtleGlow)">
+    <polyline points="50,90 50,50 90,50"/>
+    <polyline points="310,50 350,50 350,90"/>
+    <polyline points="50,310 50,350 90,350"/>
+    <polyline points="310,350 350,350 350,310"/>
+  </g>
+
+  <!-- robot head -->
+  <g transform="translate(200, 170)" filter="url(#subtleGlow)">
+    <!-- antenna -->
+    <line x1="0" y1="-80" x2="0" y2="-62" stroke="#63dcb4" stroke-width="2" stroke-opacity="0.6"/>
+    <circle cx="0" cy="-84" r="4" fill="#63dcb4" fill-opacity="0.7"/>
+
+    <!-- head outline -->
+    <rect x="-58" y="-55" width="116" height="90" rx="10" ry="10"
+          fill="none" stroke="#63dcb4" stroke-width="2" stroke-opacity="0.5"/>
+
+    <!-- inner head plate -->
+    <rect x="-50" y="-47" width="100" height="74" rx="6" ry="6"
+          fill="#63dcb4" fill-opacity="0.03" stroke="#63dcb4" stroke-width="0.5" stroke-opacity="0.15"/>
+
+    <!-- eyes -->
+    <rect x="-34" y="-30" width="22" height="16" rx="3"
+          fill="#63dcb4" fill-opacity="0.8" filter="url(#textGlow)"/>
+    <rect x="12" y="-30" width="22" height="16" rx="3"
+          fill="#63dcb4" fill-opacity="0.8" filter="url(#textGlow)"/>
+
+    <!-- eye pupils / glint -->
+    <rect x="-28" y="-26" width="6" height="8" rx="1" fill="#0a0a0f" fill-opacity="0.6"/>
+    <rect x="18" y="-26" width="6" height="8" rx="1" fill="#0a0a0f" fill-opacity="0.6"/>
+
+    <!-- mouth - grid of dots -->
+    <g fill="#63dcb4" fill-opacity="0.45">
+      <circle cx="-20" cy="12" r="2"/>
+      <circle cx="-10" cy="12" r="2"/>
+      <circle cx="0"   cy="12" r="2"/>
+      <circle cx="10"  cy="12" r="2"/>
+      <circle cx="20"  cy="12" r="2"/>
+      <circle cx="-15" cy="22" r="1.5"/>
+      <circle cx="-5"  cy="22" r="1.5"/>
+      <circle cx="5"   cy="22" r="1.5"/>
+      <circle cx="15"  cy="22" r="1.5"/>
+    </g>
+
+    <!-- ear bolts -->
+    <circle cx="-62" cy="-10" r="5" fill="none" stroke="#63dcb4" stroke-width="1.5" stroke-opacity="0.3"/>
+    <circle cx="62"  cy="-10" r="5" fill="none" stroke="#63dcb4" stroke-width="1.5" stroke-opacity="0.3"/>
+    <circle cx="-62" cy="-10" r="1.5" fill="#63dcb4" fill-opacity="0.3"/>
+    <circle cx="62"  cy="-10" r="1.5" fill="#63dcb4" fill-opacity="0.3"/>
+
+    <!-- neck lines -->
+    <line x1="-15" y1="38" x2="-15" y2="48" stroke="#63dcb4" stroke-width="1" stroke-opacity="0.2"/>
+    <line x1="0"   y1="38" x2="0"   y2="48" stroke="#63dcb4" stroke-width="1" stroke-opacity="0.2"/>
+    <line x1="15"  y1="38" x2="15"  y2="48" stroke="#63dcb4" stroke-width="1" stroke-opacity="0.2"/>
+  </g>
+
+  <!-- initials below robot -->
+  <text x="200" y="280" text-anchor="middle" dominant-baseline="central"
+        font-family="'Courier New', monospace" font-weight="700" font-size="48"
+        fill="url(#textGrad)" filter="url(#textGlow)" letter-spacing="6">
+    AL
+  </text>
+
+  <!-- prompt line -->
+  <text x="200" y="330" text-anchor="middle"
+        font-family="'Courier New', monospace" font-size="12"
+        fill="#63dcb4" fill-opacity="0.3" filter="url(#subtleGlow)">
+    ~/soan.se $
+  </text>
+
+  <!-- scanlines overlay -->
+  <pattern id="scanlines" width="4" height="4" patternUnits="userSpaceOnUse">
+    <rect width="4" height="2" fill="white" fill-opacity="0.008"/>
+  </pattern>
+  <rect width="400" height="400" fill="url(#scanlines)"/>
+</svg>
