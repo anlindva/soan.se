@@ -250,9 +250,25 @@
         line.className = 'history-line';
         line.innerHTML =
           '<span class="host">guest@soan.se</span> ~ $ <span class="cmd">q2</span>' +
-          '<span class="output">loading ghost archive :: Clan SoL :: sol.endor.nu ...</span>';
+          '<span class="output">locating ghost archive :: Clan SoL :: sol.endor.nu ...</span>';
         history.appendChild(line);
-        setTimeout(() => { window.location.href = '/q2.html'; }, 800);
+        history.scrollTop = history.scrollHeight;
+
+        // hide terminal, show loading spinner
+        const container = document.querySelector('.container');
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:#0a0a0f;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;font-family:inherit;';
+        overlay.innerHTML =
+          '<div style="width:40px;height:40px;border:2px solid #1a1a2a;border-top-color:#63dcb4;border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:1.5rem;"></div>' +
+          '<div style="color:#63dcb4;font-size:0.75rem;opacity:0.7;letter-spacing:0.1em;" id="q2-status">connecting to sol.endor.nu</div>' +
+          '<style>@keyframes spin{to{transform:rotate(360deg)}}</style>';
+        document.body.appendChild(overlay);
+
+        const status = document.getElementById('q2-status');
+        setTimeout(() => { status.textContent = 'retrieving snapshot [Nov 02, 2000]'; }, 1200);
+        setTimeout(() => { status.textContent = 'decrypting ghost archive...'; }, 2400);
+        setTimeout(() => { status.textContent = ':: Clan SoL :: launching'; }, 3400);
+        setTimeout(() => { window.location.href = '/q2.html'; }, 4200);
         return;
       }
 
