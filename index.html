@@ -218,7 +218,7 @@
 
   <script>
     const commands = {
-      help:    'available commands: help, whoami, ls, cat readme, uptime, ping, clear',
+      help:    'available commands: help, whoami, ls, cat readme, uptime, ping, q2, clear',
       whoami:  'guest — nice try though',
       ls:      'projects/  experiments/  .secrets  README',
       uptime:  Math.floor(Math.random() * 9000 + 1000) + ' days — mass: stable, mass/energy: conserved',
@@ -242,6 +242,17 @@
 
       if (cmd === 'clear') {
         history.innerHTML = '';
+        return;
+      }
+
+      if (cmd === 'q2') {
+        const line = document.createElement('div');
+        line.className = 'history-line';
+        line.innerHTML =
+          '<span class="host">guest@soan.se</span> ~ $ <span class="cmd">q2</span>' +
+          '<span class="output">loading ghost archive :: Clan SoL :: sol.endor.nu ...</span>';
+        history.appendChild(line);
+        setTimeout(() => { window.location.href = '/q2.html'; }, 800);
         return;
       }
 

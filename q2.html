@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>:: Clan SoL :: www.clan-sol.com ::</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=VT323&display=swap');
+
+  :root {
+    --sol: #AB5903;
+    --sol-hi: #FC8B1C;
+    --fire: #cc3300;
+    --gold: #ffaa00;
+    --bg: #0a0500;
+    --panel: #050200;
+    --border: #1a0a00;
+    --text: #828987;
+    --bright: #aaaaa8;
+    --dim: #606060;
+    --green: #00ff41;
+    --wins: #4aaa88;
+    --scanline: rgba(0,0,0,0.12);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { background:var(--bg); color:var(--text); font-family:'Share Tech Mono',monospace; min-height:100vh; overflow-x:hidden; }
+
+  body::before {
+    content:''; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg,transparent,transparent 2px,var(--scanline) 2px,var(--scanline) 4px);
+    pointer-events:none; z-index:9999;
+  }
+
+  /* ── CLAN PAGE ── */
+  #clan-page { min-height:100vh; }
+
+  .clan-header { position:relative; text-align:center; padding:2.5rem 2rem 2rem; border-bottom:3px solid var(--sol); background:linear-gradient(180deg,#180800 0%,var(--bg) 100%); overflow:hidden; }
+  .clan-header::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 50% 0%,rgba(171,89,3,.2) 0%,transparent 70%); }
+
+  .clan-name { font-family:'Orbitron',sans-serif; font-size:clamp(1.8rem,7vw,4.2rem); font-weight:900; color:var(--sol); letter-spacing:.1em; text-transform:uppercase; animation:glow 4s ease-in-out infinite; }
+  @keyframes glow { 0%,100%{text-shadow:0 0 15px rgba(171,89,3,.8),0 0 40px rgba(139,0,0,.3);} 50%{text-shadow:0 0 30px rgba(252,139,28,1),0 0 80px rgba(204,51,0,.6);} }
+
+  .clan-sub  { font-family:'Share Tech Mono'; color:var(--dim); font-size:.8rem; letter-spacing:.3em; text-transform:uppercase; margin-top:.4rem; }
+  .clan-host { font-size:.68rem; color:#221000; letter-spacing:.18em; margin-top:.25rem; }
+
+  .clan-record { display:inline-flex; gap:2rem; margin-top:1.25rem; border:1px solid var(--border); padding:.5rem 2rem; background:rgba(171,89,3,.05); }
+  .rs { text-align:center; }
+  .rn { font-family:'Orbitron'; font-size:1.5rem; font-weight:700; color:var(--sol); display:block; }
+  .rn.w { color:var(--wins); }
+  .rn.l { color:var(--fire); }
+  .rl { font-size:.62rem; color:var(--dim); letter-spacing:.18em; text-transform:uppercase; }
+
+  /* NAV */
+  .clan-nav { display:flex; justify-content:center; flex-wrap:wrap; background:var(--panel); border-bottom:2px solid var(--sol); }
+  .nav-btn { background:none; border:none; border-right:1px solid #150700; color:var(--dim); font-family:'Share Tech Mono'; font-size:.8rem; padding:.6rem 1.15rem; cursor:pointer; text-transform:uppercase; letter-spacing:.1em; transition:all .15s; }
+  .nav-btn:first-child { border-left:1px solid #150700; }
+  .nav-btn:hover,.nav-btn.active { background:var(--sol); color:#fff; }
+
+  /* CONTENT */
+  .clan-content { max-width:860px; margin:0 auto; padding:2rem 1.5rem; }
+  .section { display:none; }
+  .section.active { display:block; }
+
+  .sh { font-family:'Orbitron'; color:var(--sol); font-size:1rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; margin-bottom:1.25rem; padding-bottom:.4rem; border-bottom:1px solid var(--sol); }
+  .sh::before { content:':: '; color:var(--border); }
+  .sh::after  { content:' ::'; color:var(--border); }
+
+  /* NEWS */
+  .ni { margin-bottom:1.6rem; }
+  .nm { color:var(--sol); font-size:.78rem; margin-bottom:.2rem; }
+  .nm .date { color:var(--dim); }
+  .nm a { color:var(--sol-hi); text-decoration:none; }
+  .nr { height:1px; background:#150800; margin-bottom:.45rem; }
+  .nb { color:var(--dim); font-size:.8rem; line-height:1.75; font-family:verdana,sans-serif; }
+  .nb a { color:var(--sol); }
+  .nb b { color:var(--bright); }
+  .nb li { margin:.2rem 0 .2rem 1.2rem; }
+
+  /* SIDEBAR STATS */
+  .stats-bar { display:flex; gap:1.5rem; flex-wrap:wrap; border:1px solid var(--border); padding:.7rem 1rem; margin-bottom:1.25rem; background:var(--panel); font-size:.77rem; }
+  .sb strong { color:var(--bright); display:block; }
+  .sb span   { color:var(--dim); }
+
+  /* WAR TABLE */
+  .wt { width:100%; border-collapse:collapse; font-size:.78rem; }
+  .wt th { background:var(--sol); color:#fff; padding:.35rem .6rem; text-align:left; font-family:'Share Tech Mono'; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; }
+  .wt td { padding:.3rem .6rem; border-bottom:1px solid var(--border); color:var(--dim); }
+  .wt tr:hover td { background:rgba(171,89,3,.06); }
+  .won  { color:var(--wins); font-weight:bold; }
+  .lost { color:var(--fire); }
+  .void { color:#332200; }
+
+  /* MEMBERS */
+  .mg { display:grid; grid-template-columns:repeat(auto-fit,minmax(185px,1fr)); gap:1rem; }
+  .mc { border:1px solid var(--border); background:var(--panel); padding:1rem; text-align:center; transition:all .2s; }
+  .mc:hover { border-color:var(--sol); box-shadow:0 0 14px rgba(171,89,3,.18); }
+  .mh { font-family:'Orbitron'; font-size:.9rem; font-weight:700; color:var(--sol); margin-bottom:.25rem; }
+  .mr { font-size:.65rem; color:var(--dim); letter-spacing:.16em; text-transform:uppercase; }
+  .md { font-size:.73rem; color:#332200; margin-top:.4rem; line-height:1.5; }
+  .mi { font-size:1.8rem; display:block; margin-bottom:.35rem; }
+  .inactive { opacity:.45; }
+  .you-tag { font-size:.58rem; color:var(--gold); opacity:.7; float:right; letter-spacing:.12em; }
+
+  /* FILES */
+  .fn { border:1px solid var(--border); background:var(--panel); padding:.7rem 1rem; margin-bottom:.9rem; font-size:.77rem; color:var(--dim); line-height:1.65; }
+  .fn a { color:var(--sol); }
+  .fl { display:block; padding:.45rem .6rem; border-bottom:1px solid var(--border); font-size:.78rem; color:var(--sol); text-decoration:none; transition:background .15s; }
+  .fl:hover { background:rgba(171,89,3,.08); }
+  .fl span { color:var(--dim); font-size:.7rem; float:right; }
+
+  /* WORD */
+  .ws { border:1px solid var(--border); background:var(--panel); padding:1.1rem; margin-bottom:.9rem; font-size:.8rem; color:var(--dim); line-height:1.8; }
+  .ws h3 { color:var(--sol); font-family:'Orbitron'; font-size:.85rem; margin-bottom:.5rem; font-weight:700; }
+
+  /* FOOTER */
+  .clan-footer { text-align:center; border-top:2px solid var(--sol); padding:1.5rem; font-size:.68rem; color:#221000; letter-spacing:.14em; line-height:2.2; }
+  .b88 { display:inline-block; width:88px; height:31px; background:linear-gradient(135deg,#150800,#301200); border:1px solid var(--sol); font-family:'VT323'; font-size:10px; color:var(--sol); text-align:center; line-height:31px; vertical-align:middle; margin:2px; letter-spacing:1px; }
+  .hc { display:inline-block; background:#000; border:1px solid #333; padding:1px 5px; font-family:'VT323'; font-size:1.25rem; color:#ff4400; letter-spacing:.1em; text-shadow:0 0 6px #ff4400; }
+
+  /* BACK BUTTON */
+  .back-btn { position:fixed; top:1rem; right:1rem; z-index:100; background:none; border:1px solid var(--sol); color:var(--sol); font-family:'Share Tech Mono',monospace; font-size:.72rem; padding:.4rem .8rem; cursor:pointer; letter-spacing:.1em; transition:all .15s; }
+  .back-btn:hover { background:var(--sol); color:#fff; }
+
+  @media(max-width:600px){.nav-btn{font-size:.68rem;padding:.5rem .6rem;}.clan-record{gap:1rem;padding:.5rem 1rem;}}
+</style>
+</head>
+<body>
+
+<!-- CLAN PAGE -->
+<div id="clan-page">
+
+  <button class="back-btn" onclick="window.location.href='/'">← soan.se</button>
+
+  <header class="clan-header">
+    <div class="clan-name">:: Clan SoL ::</div>
+    <div class="clan-sub">Sonz of Lilith &nbsp;·&nbsp; Quake II &nbsp;·&nbsp; Sweden</div>
+    <div class="clan-host">sol.endor.nu &nbsp;·&nbsp; www.clan-sol.com &nbsp;·&nbsp; IRC: #SoL @ QuakeNet</div>
+    <div class="clan-record">
+      <div class="rs"><span class="rn">24</span><span class="rl">Fights</span></div>
+      <div class="rs"><span class="rn w">18</span><span class="rl">Won</span></div>
+      <div class="rs"><span class="rn l">6</span><span class="rl">Lost</span></div>
+    </div>
+  </header>
+
+  <nav class="clan-nav" id="main-nav">
+    <button class="nav-btn active" data-sec="warriors">Warriors</button>
+    <button class="nav-btn" data-sec="warfare">Warfare</button>
+    <button class="nav-btn" data-sec="word">Word</button>
+    <button class="nav-btn" data-sec="files">Files</button>
+    <button class="nav-btn" data-sec="news">News</button>
+  </nav>
+
+  <div class="clan-content">
+
+    <!-- WARRIORS -->
+    <div class="section active" id="section-warriors">
+      <div class="sh">Warriors</div>
+      <div class="mg">
+        <div class="mc">
+          <span class="you-tag">YOU</span>
+          <span class="mi">☽</span>
+          <div class="mh">[SoL]ThamuZ</div>
+          <div class="mr">Founder · Webmaster</div>
+          <div class="md">PHP, HTML, site admin<br>Moving to Växjö → studies<br>thamuz@clan-sol.com</div>
+        </div>
+        <div class="mc">
+          <span class="mi">✦</span>
+          <div class="mh">[SoL]Frank</div>
+          <div class="mr">Graphics</div>
+          <div class="md">Site design &amp; banners<br>Hosted local LAN vs [ownage]<br>frank@clan-sol.com</div>
+        </div>
+        <div class="mc">
+          <span class="mi">☾</span>
+          <div class="mh">[SoL]Ahriman</div>
+          <div class="mr">IRC Operator</div>
+          <div class="md">Has IRCOP friends<br>Do NOT fuck with him<br>ahriman@clan-sol.com</div>
+        </div>
+        <div class="mc">
+          <span class="mi">⚡</span>
+          <div class="mh">[SoL]Supah</div>
+          <div class="mr">New recruit</div>
+          <div class="md">Ex-clanleader of [Shah]<br>"A vicious quaker"<br>Working on custom male skin</div>
+        </div>
+        <div class="mc inactive">
+          <span class="mi">⚔</span>
+          <div class="mh">[SoL]Helios</div>
+          <div class="mr">IRC Operator</div>
+          <div class="md" style="color:#221000">In military service<br>(Nov 2000)</div>
+        </div>
+        <div class="mc inactive">
+          <span class="mi">⚔</span>
+          <div class="mh">[SoL]abbadon</div>
+          <div class="mr">IRC Operator</div>
+          <div class="md" style="color:#221000">In military service<br>(Nov 2000)</div>
+        </div>
+      </div>
+      <p style="margin-top:1rem;font-size:.7rem;color:#221000;">Full bios from warriors.html — <a href="https://web.archive.org/web/20001102/http://sol.endor.nu/warriors.html" target="_blank" style="color:var(--sol)">check Wayback</a></p>
+    </div>
+
+    <!-- WARFARE -->
+    <div class="section" id="section-warfare">
+      <div class="sh">Warfare</div>
+      <div class="stats-bar">
+        <div class="sb"><strong>Fights</strong><span>24</span></div>
+        <div class="sb"><strong>Won</strong><span style="color:var(--wins)">18</span></div>
+        <div class="sb"><strong>Lost</strong><span style="color:var(--fire)">6</span></div>
+        <div class="sb"><strong>Win rate</strong><span style="color:var(--sol)">75%</span></div>
+        <div class="sb"><strong>Home map</strong><span>q2dm3 · never lost</span></div>
+      </div>
+      <table class="wt">
+        <tr><th>Opponent</th><th>Result</th><th>Score</th><th>Format</th><th>Notes</th></tr>
+        <tr><td>[OK]</td><td class="lost">LOST</td><td>—</td><td>LAN · noll8 final</td><td>DM compo final — we placed 2nd</td></tr>
+        <tr><td>[eA]</td><td class="won">WON</td><td>—</td><td>LAN · noll8</td><td>Winners bracket on the way to final</td></tr>
+        <tr><td>[OK]</td><td class="won">WON</td><td>—</td><td>PCW</td><td></td></tr>
+        <tr><td>[OK]</td><td class="won">WON</td><td>—</td><td>PCW</td><td></td></tr>
+        <tr><td>[OK]</td><td class="lost">LOST</td><td>—</td><td>PCW</td><td></td></tr>
+        <tr><td>[OWNAGE]</td><td class="won">WON</td><td>—</td><td>PCW · noll8</td><td></td></tr>
+        <tr><td>[uNCLe]</td><td class="won">WON</td><td>—</td><td>PCW · noll8</td><td></td></tr>
+        <tr><td>[eA]</td><td class="won">WON</td><td>—</td><td>PCW · noll8</td><td></td></tr>
+        <tr><td>[OWNAGE]</td><td class="won">WON</td><td>249–217</td><td>LAN · Frank's</td><td>Game 1/3</td></tr>
+        <tr><td>[OWNAGE]</td><td class="won">WON</td><td>260–168</td><td>LAN · Frank's</td><td>Game 2/3</td></tr>
+        <tr><td>[OWNAGE]</td><td class="won">WON</td><td>289–140</td><td>LAN · Frank's</td><td>Game 3/3 — new dm1 tactics tested</td></tr>
+        <tr><td>[uNCLe]</td><td class="void">VOID</td><td>70–10 @ 6min</td><td>Official · q2dm3</td><td>[uNCLe]purri disconnected — lamma</td></tr>
+        <tr><td colspan="5" style="color:#221000;font-size:.7rem;padding-top:.4rem;">+ additional results in warfare.html not yet recovered</td></tr>
+      </table>
+    </div>
+
+    <!-- WORD -->
+    <div class="section" id="section-word">
+      <div class="sh">Word</div>
+      <div class="ws">
+        <h3>The Syndicate</h3>
+        An independent sub-division of Clan SoL. They are <b style="color:var(--bright)">NOT</b> members of Clan SoL.
+        Their own web was in progress at the time of archiving. Full details at <a href="https://web.archive.org/web/20001102/http://sol.endor.nu/word.html" target="_blank" style="color:var(--sol)">word.html on Wayback</a>.
+      </div>
+      <div class="ws">
+        <h3>IRC: #SoL on QuakeNet</h3>
+        Operators: <b style="color:var(--bright)">Ahriman, Frank, ThamuZ, abbadon, supah, Helios</b>.<br>
+        Don't spam. Don't flood. Don't touch the topic. Don't try a takeover — Ahriman has IRCOP friends.<br>
+        We are Clan SoL. We ain't taking shit from anyone.
+      </div>
+      <div class="ws">
+        <h3>Contact</h3>
+        <span style="color:var(--sol)">sol@clan-sol.com</span> — general<br>
+        <span style="color:var(--sol)">thamuz@clan-sol.com</span> — ThamuZ (founder, webmaster)<br>
+        <span style="color:var(--sol)">frank@clan-sol.com</span> — Frank (graphics)<br>
+        <span style="color:var(--sol)">ahriman@clan-sol.com</span> — Ahriman
+      </div>
+    </div>
+
+    <!-- FILES -->
+    <div class="section" id="section-files">
+      <div class="sh">Files</div>
+      <div class="fn">
+        Demos from noll8-lan were linked to the <b>noll8lan demo archive</b>. The files section also
+        contained graphics and Supah's custom Q2 male skin (work-in-progress at archiving time).<br>
+        Full listing: <a href="https://web.archive.org/web/20001102/http://sol.endor.nu/files.html" target="_blank">files.html on Wayback</a>
+      </div>
+      <a class="fl" href="https://web.archive.org/web/20001102162840/http://lan.noll8.com/demos/index.asp?url=http://lan.noll8.com/demos1//sol&path=e:\users\lan.noll8.com\wwwroot\demos1\sol" target="_blank">
+        noll8-lan SoL demos (Wayback link) <span>noll8 · 2000</span>
+      </a>
+      <a class="fl" href="#">[SoL]Supah — male skin v1.pcx <span>WIP · Q2</span></a>
+      <a class="fl" href="#">Clan SoL graphics pack <span>by Frank</span></a>
+      <p style="margin-top:1rem;font-size:.72rem;color:#332200;line-height:1.8;">
+        Play Q2 demos today: <b style="color:var(--dim)">Q2Pro</b> or <b style="color:var(--dim)">KMQuake2</b><br>
+        <span style="color:var(--sol)">demomap &lt;filename&gt;</span>
+      </p>
+    </div>
+
+    <!-- NEWS -->
+    <div class="section" id="section-news">
+      <div class="sh">News</div>
+
+      <div class="ni">
+        <div class="nm">Back from noll8lan! <span class="date">&nbsp;:: 000725 ::</span>&nbsp;<a href="mailto:thamuz@clan-sol.com">ThamuZ</a></div>
+        <div class="nr"></div>
+        <div class="nb">
+          We participated at 08-lan this weekend, a lan held in Stockholm.
+          We managed to grab the <b>2nd place in the DM-compo</b>, losing the final to <a href="#">[OK]</a>.
+          Very satisfied since we went all the way through the winners-bracket, defeated [eA] on the way. Damn OK-guys :)<br><br>
+          Demos are up at the <a href="#">noll8lan-page</a>. PCWs played (unofficial):
+          <li>[OWNAGE] — 1 pcw, won</li>
+          <li>[uNCLe] — 1 pcw, won</li>
+          <li>[eA] — 1 pcw, won</li>
+          <li>[OK] — 3 pcw's, won 2, lost 1</li><br>
+          Also tried to play [uNCLe] in an official — 6 minutes into dm3 with us at 70-10 lead,
+          [uNCLe]purri disconnected the server because "he was angry". Llamma.<br><br>
+          Thanks: <b>Moon</b> and crew for a great lan! <b>Bomb[sub30]</b> for the DM-compo. And <b>[OK]</b> for covering the sun
+          in the final. Congrats to the victory, faggots :P<br><br>
+          2nd place — never lost q2dm3. Kickass guys!
+        </div>
+      </div>
+
+      <div class="ni">
+        <div class="nm">First off, the click you claim! <span class="date">&nbsp;:: 000725 ::</span>&nbsp;<a href="mailto:ahriman@clan-sol.com">Ahriman</a></div>
+        <div class="nr"></div>
+        <div class="nb">
+          I got so envious of my homies writing about their clan assignments, so: rules for <b>#SoL on QuakeNet</b>.<br><br>
+          <b>#1</b> Do NOT fuck with operators (Ahriman, Frank, ThamuZ, abbadon, supah, Helios).<br>
+          <b>#2</b> Don't change the topic — keep ':: Clan SoL :: www.clan-sol.com ::'<br>
+          <b>#3</b> We decide ops. NOT you.<br>
+          <b>#4</b> No spamming, flooding. You'll get kicked in a sec — faster if Frankie is online. Don't try a takeover. I've got IRCOP friends.<br>
+          <b>#5</b> Read all the above — then you're welcome.<br><br>
+          We are Clan SoL. We ain't taking shit from anyone.
+        </div>
+      </div>
+
+      <div class="ni">
+        <div class="nm">LAN &amp; some shit about the site <span class="date">&nbsp;:: 000725 ::</span>&nbsp;<a href="mailto:thamuz@clan-sol.com">ThamuZ</a></div>
+        <div class="nr"></div>
+        <div class="nb">
+          Working on PHP scripting — minor computer crash set me back. :/<br><br>
+          Frank hosted a lan with us and local clan <a href="#">[ownage]</a> — quite skilled, were at Triad2.
+          Played 3 games, won all: <b>249-217, 260-168, 289-140</b>. Got better each game. Testing new dm1 tactics that showed great results in the last one. Fear!<br><br>
+          I have some plans on moving to Växjö for studies. Not 100% sure — but I'll aim for Knallelan. Time will tell.
+        </div>
+      </div>
+
+      <div class="ni">
+        <div class="nm">Bad news.. <span class="date">&nbsp;:: 000724 ::</span>&nbsp;<a href="mailto:frank@clan-sol.com">Frank</a></div>
+        <div class="nr"></div>
+        <div class="nb">
+          First — thanks for all the compliments on the new web! Now the bad news: ThamuZ is probably moving to Växjö.
+          With <b>Helios</b> and <b>abbadon</b> in the military we don't know if we can field four for Noll8-lan2.
+          This is not the end of the clan — maybe the beginning of a new era. Stay tuned. :)
+        </div>
+      </div>
+
+      <div class="ni">
+        <div class="nm">Web updated <span class="date">&nbsp;:: 000723 ::</span>&nbsp;<a href="mailto:frank@clan-sol.com">Frank</a></div>
+        <div class="nr"></div>
+        <div class="nb">
+          ThamuZ made some minor improvements and soon all the PHP-shit will be done. Files section updated with new graphics.
+          <b>Supah</b> is working on a new male skin — ready soon as those damn Q2 colors work. Damn Q2.ACTs. :)<br><br>
+          The <b>Syndicate</b> will have their own web soon — they are NOT members of Clan SoL. More in the Word section.
+        </div>
+      </div>
+
+      <div class="ni">
+        <div class="nm">Back in black <span class="date">&nbsp;:: 000717 ::</span>&nbsp;<a href="mailto:sol@clan-sol.com">Clan SoL</a></div>
+        <div class="nr"></div>
+        <div class="nb">
+          After playing Q3 for a while we decided to go back to Q2 — mainly because Q3 basically sucks.
+          We haven't played Q2 seriously since Triad2, but we still consider ourselves one of the best clans in Scandinavia.
+          If you have a problem with that, keep it to yourself.<br><br>
+          The clan will probably participate at <b>Noll8-Lan2</b> and <b>Knallelan 2000</b>.<br><br>
+          Welcome to our new member <b>Supah</b>, former clanleader of [Shah] and a vicious quaker. He plays in our first lineup. Look out.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /clan-content -->
+
+  <footer class="clan-footer">
+    <div>
+      <span class="b88">Quake II</span>
+      <span class="b88">clan-sol.com</span>
+      <span class="b88">#SoL QuakeNet</span>
+      <span class="b88">endor.nu</span>
+    </div>
+    <div style="margin-top:.6rem">Best viewed in Netscape Navigator 4.x &nbsp;·&nbsp; 800×600 &nbsp;·&nbsp; 16-bit colour</div>
+    <div style="margin-top:.3rem">Visitors: <span class="hc" id="hit-counter">000000</span></div>
+    <div style="margin-top:.7rem;color:#150800">
+      (c) 2000 ThamuZ &amp; Frank &nbsp;·&nbsp; All rights reserved<br>
+      sol.endor.nu &nbsp;·&nbsp; Archived by Alexa / Internet Archive: Nov 02, 2000<br>
+      Ghosted on soan.se &nbsp;·&nbsp; 2026
+    </div>
+  </footer>
+
+</div><!-- /clan-page -->
+
+<script>
+// ── CLAN NAV ──
+document.getElementById('main-nav').addEventListener('click',e=>{
+  const btn=e.target.closest('.nav-btn');if(!btn)return;
+  const sec=btn.dataset.sec;
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('section-'+sec).classList.add('active');
+  btn.classList.add('active');
+});
+
+function animateCounter(){
+  const el=document.getElementById('hit-counter');
+  let n=0;const t=1337;
+  const iv=setInterval(()=>{
+    n+=Math.ceil((t-n)/8);el.textContent=String(n).padStart(6,'0');
+    if(n>=t){el.textContent='001337';clearInterval(iv);}
+  },40);
+}
+
+animateCounter();
+</script>
+</body>
+</html>
