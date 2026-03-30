@@ -108,6 +108,36 @@
   .fl { display:block; padding:.45rem .6rem; border-bottom:1px solid var(--border); font-size:.78rem; color:var(--sol); text-decoration:none; transition:background .15s; }
   .fl:hover { background:rgba(171,89,3,.08); }
   .fl span { color:var(--dim); font-size:.7rem; float:right; }
+  .demo-play { cursor:pointer; }
+  .demo-play:hover { background:rgba(171,89,3,.12); }
+
+  /* VIDEO OVERLAY */
+  .video-overlay {
+    display:none; position:fixed; inset:0; z-index:200;
+    background:rgba(5,2,0,.92); backdrop-filter:blur(4px);
+    align-items:center; justify-content:center; flex-direction:column;
+  }
+  .video-overlay.active { display:flex; }
+  .video-overlay-inner {
+    position:relative; width:90%; max-width:900px;
+    border:1px solid var(--sol); background:#000;
+    box-shadow:0 0 40px rgba(171,89,3,.2);
+  }
+  .video-overlay-inner video { width:100%; display:block; }
+  .video-overlay-title {
+    font-family:'Share Tech Mono',monospace; font-size:.75rem;
+    color:var(--sol); padding:.5rem .8rem; background:var(--panel);
+    border-bottom:1px solid var(--border); letter-spacing:.08em;
+  }
+  .video-overlay-close {
+    position:absolute; top:-.6rem; right:-.6rem;
+    width:28px; height:28px; border-radius:50%;
+    background:var(--sol); color:#fff; border:none;
+    font-family:'Share Tech Mono',monospace; font-size:1rem;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:all .15s; z-index:1;
+  }
+  .video-overlay-close:hover { background:var(--fire); }
 
   /* WORD */
   .ws { border:1px solid var(--border); background:var(--panel); padding:1.1rem; margin-bottom:.9rem; font-size:.8rem; color:var(--dim); line-height:1.8; }
@@ -262,17 +292,7 @@
       </a>
       <a class="fl" href="#">[SoL]Supah — male skin v1.pcx <span>WIP · Q2</span></a>
       <a class="fl" href="#">Clan SoL graphics pack <span>by Frank</span></a>
-
-      <div style="margin-top:1.5rem;margin-bottom:1.5rem;">
-        <div style="font-size:.78rem;color:var(--sol);margin-bottom:.6rem;letter-spacing:.06em;">▶ SoL vs CA — q2dm3</div>
-        <div style="position:relative;border:1px solid var(--border);background:#000;max-width:720px;">
-          <video controls preload="metadata" style="width:100%;display:block;"
-                 poster="" >
-            <source src="/files/SoL-CA-dm3-edit.mp4" type="video/mp4">
-          </video>
-        </div>
-        <div style="font-size:.65rem;color:#332200;margin-top:.4rem;">Q2 demo recorded from engine · q2dm3 · DM</div>
-      </div>
+      <a class="fl demo-play" href="#" data-video="/files/SoL-CA-dm3-edit.mp4">▶ SoL vs CA — q2dm3 <span>demo · q2dm3 · DM</span></a>
 
       <p style="margin-top:1rem;font-size:.72rem;color:#332200;line-height:1.8;">
         Play Q2 demos today: <b style="color:var(--dim)">Q2Pro</b> or <b style="color:var(--dim)">KMQuake2</b><br>
@@ -382,7 +402,50 @@
 
 </div><!-- /clan-page -->
 
+<!-- VIDEO OVERLAY -->
+<div class="video-overlay" id="video-overlay">
+  <div class="video-overlay-inner">
+    <button class="video-overlay-close" id="video-close">×</button>
+    <div class="video-overlay-title" id="video-title"></div>
+    <video controls id="overlay-video">
+      <source src="" type="video/mp4">
+    </video>
+  </div>
+</div>
+
 <script>
+// ── VIDEO PLAYER ──
+const overlay = document.getElementById('video-overlay');
+const overlayVideo = document.getElementById('overlay-video');
+const videoTitle = document.getElementById('video-title');
+const videoClose = document.getElementById('video-close');
+
+document.querySelectorAll('.demo-play').forEach(el => {
+  el.addEventListener('click', e => {
+    e.preventDefault();
+    const src = el.dataset.video;
+    const name = el.textContent.trim().replace(/\s+/g, ' ');
+    overlayVideo.src = src;
+    videoTitle.textContent = ':: ' + name + ' ::';
+    overlay.classList.add('active');
+    overlayVideo.play();
+  });
+});
+
+function closeVideo() {
+  overlay.classList.remove('active');
+  overlayVideo.pause();
+  overlayVideo.src = '';
+}
+
+videoClose.addEventListener('click', closeVideo);
+overlay.addEventListener('click', e => {
+  if (e.target === overlay) closeVideo();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && overlay.classList.contains('active')) closeVideo();
+});
+
 // ── CLAN NAV ──
 document.getElementById('main-nav').addEventListener('click',e=>{
   const btn=e.target.closest('.nav-btn');if(!btn)return;
